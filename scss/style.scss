@@ -68,19 +68,19 @@ section {
     margin-bottom: 50px;
   }
 
-  &:nth-child(odd) {
+  &:nth-child(even) {
     background: #c6c6c6;
+  }
+
+  &:nth-child(odd) {
+    background: lighten(#c6c6c6, 15%);
   }
 }
 
-.myFirstCanvas {
-  background: #c6c6c6;
-
-  #firstCanvas {
-    border: 2px solid #000;
-    border-radius: 5px;
-    background: #fff;
-  }
+canvas {
+  border: 2px solid #000;
+  border-radius: 5px;
+  background: #fff;
 }
 
 @media only screen and (max-width : 1199px) {

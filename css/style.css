@@ -129,15 +129,15 @@ section h2 {
   margin-bottom: 50px;
 }
 
+section:nth-child(even) {
+  background: #c6c6c6;
+}
+
 section:nth-child(odd) {
-  background: #c6c6c6;
+  background: #ececec;
 }
 
-.myFirstCanvas {
-  background: #c6c6c6;
-}
-
-.myFirstCanvas #firstCanvas {
+canvas {
   border: 2px solid #000;
   border-radius: 5px;
   background: #fff;
