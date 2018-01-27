@@ -82,8 +82,63 @@ body {
   flex-direction: column;
 }
 
-#firstCanvas {
+.header {
+  width: 100%;
+  height: 500px;
+  display: -ms-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.header h1 {
+  font-size: 56px;
+  font-weight: 700;
+  color: #000;
+  margin: 0;
+}
+
+section {
+  padding: 100px 0;
+  display: -ms-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+section h2 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0;
+  margin-bottom: 50px;
+}
+
+section:nth-child(odd) {
+  background: #c6c6c6;
+}
+
+.myFirstCanvas {
+  background: #c6c6c6;
+}
+
+.myFirstCanvas #firstCanvas {
   border: 2px solid #000;
   border-radius: 5px;
-  margin: 100px auto;
+  background: #fff;
 }
