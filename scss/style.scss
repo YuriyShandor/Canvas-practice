@@ -1,6 +1,5 @@
 // to compile...
 
-@import "./_components/_open-sans.scss";
 @import "./_components/_roboto.scss";
 
 * {
@@ -10,7 +9,7 @@
 }
 
 body {
-  font-family: OpenSans, Arial sans-serif;
+  font-family: Roboto, Arial sans-serif;
   padding: 0;
   margin: 0;
   display: -webkit-box;
