@@ -156,33 +156,17 @@ var interMouse = {
   y: undefined
 };
 
+var maxRadius = 40;
+
 interCanvas.addEventListener('mousemove', function(event) {
-  interMouse.x = event.x - ((window.innerWidth - interCanvas.width) / 2) + 9;
-  interMouse.y = event.y - ((window.innerHeight - interCanvas.height) / 2) - 9;
-  console.log(interMouse);
+  interMouse.x = event.x - (((window.innerWidth - interCanvas.width) / 2) + 9);
+  interMouse.y = event.y - (((window.innerHeight - interCanvas.height) / 2) - 9);
 });
 
-var interCircleColor = [
-  '#f44336',
-  '#e91e63',
-  '#9c27b0',
-  '#b71c1c',
-  '#4a148c',
-  '#311b92',
-  '#1a237e',
-  '#1976d2',
-  '#0d47a1',
-  '#03a9f4',
-  '#00bcd4',
-  '#004d40',
-  '#4caf50',
-  '#8bc34a',
-  '#cddc39',
-  '#76ff03',
-  '#e65100',
-  '#424242',
-  '#4e342e',
-  '#000000'
+var interCircleColor = [ '#f44336', '#e91e63', '#9c27b0', '#b71c1c',
+ '#4a148c', '#311b92', '#1a237e', '#1976d2', '#0d47a1', '#03a9f4',
+ '#00bcd4', '#004d40', '#4caf50', '#8bc34a', '#cddc39', '#76ff03',
+  '#e65100', '#424242', '#4e342e', '#000000'
 ];
 
 function CircleInter(x, y, dx, dy, radius) {
@@ -191,6 +175,7 @@ function CircleInter(x, y, dx, dy, radius) {
   this.dx = dx;
   this.dy = dy;
   this.radius = radius;
+  this.minRadius = radius;
   this.color = interCircleColor[Math.floor(Math.random() * interCircleColor.length)]
 
   this.draw = function() {
@@ -215,8 +200,12 @@ function CircleInter(x, y, dx, dy, radius) {
     // Add Interactivity
 
     if (interMouse.x - this.x < 50 && interMouse.x - this.x > -50 && interMouse.y - this.y < 50 && interMouse.y - this.y > -50) {
-      this.radius += 1;
-    };
+      if (this.radius < maxRadius) {
+        this.radius += 2;
+      }
+    } else if (this.radius > this.minRadius) {
+      this.radius -= 2;
+    }
 
     this.draw();
   };
@@ -224,12 +213,12 @@ function CircleInter(x, y, dx, dy, radius) {
 
 var circleArrayInter = [];
 
-for (var i=0; i<50; i++) {
+for (var i=0; i<500; i++) {
   var x = Math.random() * (interCanvas.width - radius * 2) + radius;
   var y = Math.random() * (interCanvas.height - radius * 2) + radius;
-  var radius = 30;
-  var dx = (Math.random() - 0.5) * 5;
-  var dy = (Math.random() - 0.5) * 5;
+  var radius = Math.random() * 3 + 2;
+  var dx = (Math.random() - 0.5) * 2;
+  var dy = (Math.random() - 0.5) * 2;
 
   circleArrayInter.push(new CircleInter(x, y, dx, dy, radius));
 }
