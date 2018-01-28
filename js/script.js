@@ -186,11 +186,11 @@ function CircleInter(x, y, dx, dy, radius) {
   };
 
   this.move = function() {
-    if (this.x + this.radius > interCanvas.width || this.x - this.radius < 0) {
+    if (this.x + this.radius + this.dx > interCanvas.width || this.x - this.radius <= 0) {
       this.dx = -this.dx;
     };
 
-    if (this.y + this.radius > interCanvas.height || this.y - this.radius < 0) {
+    if (this.y + this.radius + this.dy > interCanvas.height || this.y - this.radius <= 0) {
       this.dy = -this.dy;
     };
 
@@ -242,6 +242,9 @@ var gravityCan = gravityCanvas.getContext('2d');
 gravityCanvas.width = 900;
 gravityCanvas.height = 600;
 
+var gravityValue = 1;
+var frictionValue = 0.99;
+
 function Ball(x, y, dx, dy, radius) {
   this.x = x;
   this.y = y;
@@ -254,20 +257,23 @@ function Ball(x, y, dx, dy, radius) {
     gravityCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
     gravityCan.fillStyle = "red";
     gravityCan.fill();
+    gravityCan.strokeStyle = "#000";
+    gravityCan.lineWidth = 5;
+    gravityCan.stroke();
   };
 
   this.move = function() {
-    // if (this.x + this.radius + 5 > animateCanvas.width || this.x - this.radius - 5 < 0) {
-    //   this.dx = -this.dx;
-    // };
-    //
-    if (this.y + this.radius > animateCanvas.height) {
-      this.dy = -this.dy;
-    } else {
-      this.dy += 1;
+    if (this.x + this.radius + this.dx > gravityCanvas.width || this.x - this.radius <= 0) {
+      this.dx = -this.dx;
     };
-    //
-    // this.x += this.dx;
+
+    if (this.y + this.radius + this.dy > gravityCanvas.height) {
+      this.dy = -this.dy * frictionValue;
+    } else {
+      this.dy += gravityValue;
+    };
+
+    this.x += this.dx;
     this.y += this.dy;
 
     this.draw();
@@ -276,9 +282,9 @@ function Ball(x, y, dx, dy, radius) {
 
 var ballArr = [];
 
-for (var i=0; i<1; i++) {
-  var x = Math.random() * (gravityCanvas.width - radius * 2) + radius;
-  var y = Math.random() * (gravityCanvas.height - radius * 2) + radius;
+for (var i=0; i<30; i++) {
+  var x = Math.random() * (gravityCanvas.width - radius * 2 - 5) + radius;
+  var y = Math.random() * (gravityCanvas.height - radius * 2 - 5) + radius;
   var radius = 30;
   var dx = (Math.random() - 0.5) * 7;
   var dy = (Math.random() - 0.5) * 7;
