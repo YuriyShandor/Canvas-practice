@@ -233,3 +233,66 @@ function animateInter() {
 };
 
 animateInter();
+
+//=============== Gravity effect with canvas ============
+
+var gravityCanvas = document.getElementById('gravityCanvas');
+var gravityCan = gravityCanvas.getContext('2d');
+
+gravityCanvas.width = 900;
+gravityCanvas.height = 600;
+
+function Ball(x, y, dx, dy, radius) {
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = radius;
+
+  this.draw = function() {
+    gravityCan.beginPath();
+    gravityCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    gravityCan.fillStyle = "red";
+    gravityCan.fill();
+  };
+
+  this.move = function() {
+    // if (this.x + this.radius + 5 > animateCanvas.width || this.x - this.radius - 5 < 0) {
+    //   this.dx = -this.dx;
+    // };
+    //
+    if (this.y + this.radius > animateCanvas.height) {
+      this.dy = -this.dy;
+    } else {
+      this.dy += 1;
+    };
+    //
+    // this.x += this.dx;
+    this.y += this.dy;
+
+    this.draw();
+  };
+};
+
+var ballArr = [];
+
+for (var i=0; i<1; i++) {
+  var x = Math.random() * (gravityCanvas.width - radius * 2) + radius;
+  var y = Math.random() * (gravityCanvas.height - radius * 2) + radius;
+  var radius = 30;
+  var dx = (Math.random() - 0.5) * 7;
+  var dy = (Math.random() - 0.5) * 7;
+
+  ballArr.push(new Ball(x, y, dx, dy, radius));
+}
+
+function gravityBall() {
+  requestAnimationFrame(gravityBall);
+  gravityCan.clearRect(0, 0, gravityCanvas.width, gravityCanvas.height);
+
+  for (var i=0; i < ballArr.length; i++) {
+    ballArr[i].move();
+  };
+};
+
+gravityBall();
