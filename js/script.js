@@ -75,11 +75,11 @@ function Circle(x, y, dx, dy, radius) {
   };
 
   this.move = function() {
-    if (this.x + this.radius > animateCanvas.width || this.x - this.radius < 0) {
+    if (this.x + this.radius + 5 > animateCanvas.width || this.x - this.radius - 5 < 0) {
       this.dx = -this.dx;
     };
 
-    if (this.y + this.radius > animateCanvas.height || this.y - this.radius < 0) {
+    if (this.y + this.radius + 5 > animateCanvas.height || this.y - this.radius - 5 < 0) {
       this.dy = -this.dy;
     };
 
@@ -93,8 +93,8 @@ function Circle(x, y, dx, dy, radius) {
 var circleArray = [];
 
 for (var i=0; i<50; i++) {
-  var x = Math.random() * (animateCanvas.width - radius * 2) + radius;
-  var y = Math.random() * (animateCanvas.height - radius * 2) + radius;
+  var x = Math.random() * (animateCanvas.width - (radius + 5) * 2) + radius + 5;
+  var y = Math.random() * (animateCanvas.height - (radius + 5) * 2) + radius + 5;
   var radius = 30;
   var dx = (Math.random() - 0.5) * 7;
   var dy = (Math.random() - 0.5) * 7;
@@ -142,3 +142,105 @@ animate();
 // };
 //
 // animate();
+
+//==================== Interactin with canvas =================
+
+var interCanvas = document.getElementById('interCanvas');
+var interCan = interCanvas.getContext('2d');
+
+interCanvas.width = 900;
+interCanvas.height = 600;
+
+var interMouse = {
+  x: undefined,
+  y: undefined
+};
+
+interCanvas.addEventListener('mousemove', function(event) {
+  interMouse.x = event.x - ((window.innerWidth - interCanvas.width) / 2) + 9;
+  interMouse.y = event.y - ((window.innerHeight - interCanvas.height) / 2) - 9;
+  console.log(interMouse);
+});
+
+var interCircleColor = [
+  '#f44336',
+  '#e91e63',
+  '#9c27b0',
+  '#b71c1c',
+  '#4a148c',
+  '#311b92',
+  '#1a237e',
+  '#1976d2',
+  '#0d47a1',
+  '#03a9f4',
+  '#00bcd4',
+  '#004d40',
+  '#4caf50',
+  '#8bc34a',
+  '#cddc39',
+  '#76ff03',
+  '#e65100',
+  '#424242',
+  '#4e342e',
+  '#000000'
+];
+
+function CircleInter(x, y, dx, dy, radius) {
+  this.x = x;
+  this.y = y;
+  this.dx = dx;
+  this.dy = dy;
+  this.radius = radius;
+  this.color = interCircleColor[Math.floor(Math.random() * interCircleColor.length)]
+
+  this.draw = function() {
+    interCan.beginPath();
+    interCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    interCan.fillStyle = this.color;
+    interCan.fill();
+  };
+
+  this.move = function() {
+    if (this.x + this.radius > interCanvas.width || this.x - this.radius < 0) {
+      this.dx = -this.dx;
+    };
+
+    if (this.y + this.radius > interCanvas.height || this.y - this.radius < 0) {
+      this.dy = -this.dy;
+    };
+
+    this.x += this.dx;
+    this.y += this.dy;
+
+    // Add Interactivity
+
+    if (interMouse.x - this.x < 50 && interMouse.x - this.x > -50 && interMouse.y - this.y < 50 && interMouse.y - this.y > -50) {
+      this.radius += 1;
+    };
+
+    this.draw();
+  };
+};
+
+var circleArrayInter = [];
+
+for (var i=0; i<50; i++) {
+  var x = Math.random() * (interCanvas.width - radius * 2) + radius;
+  var y = Math.random() * (interCanvas.height - radius * 2) + radius;
+  var radius = 30;
+  var dx = (Math.random() - 0.5) * 5;
+  var dy = (Math.random() - 0.5) * 5;
+
+  circleArrayInter.push(new CircleInter(x, y, dx, dy, radius));
+}
+
+function animateInter() {
+  requestAnimationFrame(animateInter);
+  interCan.clearRect(0, 0, interCanvas.width, interCanvas.height);
+
+  for (var i=0; i < circleArrayInter.length; i++) {
+    circleArrayInter[i].move();
+  };
+};
+
+animateInter();
