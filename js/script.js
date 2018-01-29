@@ -159,8 +159,8 @@ var interMouse = {
 var maxRadius = 40;
 
 interCanvas.addEventListener('mousemove', function(event) {
-  interMouse.x = event.x - (((window.innerWidth - interCanvas.width) / 2) + 9);
-  interMouse.y = event.y - (((window.innerHeight - interCanvas.height) / 2) - 9);
+  interMouse.x = event.x - ((window.innerWidth - interCanvas.width) / 2) + 9;
+  interMouse.y = event.y - ((window.innerHeight - interCanvas.height) / 2) - 22;
 });
 
 var interCircleColor = [ '#f44336', '#e91e63', '#9c27b0', '#b71c1c',
@@ -311,8 +311,16 @@ var circCan = circularCanvas.getContext('2d');
 circularCanvas.width = 900;
 circularCanvas.height = 600;
 
-// var gravityValue = 1;
-// var frictionValue = 0.99;
+// for interactivity
+// var circularMouseMove = {
+//   x: undefined,
+//   y: undefined
+// };
+//
+// circularCanvas.addEventListener('mousemove', function(event) {
+//   circularMouseMove.x = event.x - ((window.innerWidth - circularCanvas.width) / 2) + 7;
+//   circularMouseMove.y = event.y - ((window.innerHeight - circularCanvas.height) / 2) - 5;
+// });
 
 function randomIntFromRange(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
@@ -321,8 +329,39 @@ function randomIntFromRange(min, max) {
 function Particle(x, y, radius) {
   this.x = x;
   this.y = y;
-  // this.dx = dx;
-  // this.dy = dy;
+  this.radius = radius;
+  this.radians = Math.random() * Math.PI * 2;
+  this.velocity = 0.05;
+  this.distance = randomIntFromRange(100, 150);
+  //this.lastMouse = {x: x, y: y};
+
+  this.draw = function(lastPoint) {
+    circCan.beginPath();
+    circCan.strokeStyle = 'blue';
+    circCan.lineWidth = this.radius;
+    circCan.moveTo(lastPoint.x, lastPoint.y);
+    circCan.lineTo(this.x, this.y);
+    circCan.stroke();
+    circCan.closePath();
+  };
+
+  this.move = function() {
+    var lastPoint = {x: this.x, y: this.y};
+
+    // this.lastMouse.x += (circularMouseMove.x - this.lastMouse.x) * 0.05;
+    // this.lastMouse.y += (circularMouseMove.y - this.lastMouse.y) * 0.05;
+
+    this.radians += this.velocity;
+    this.x = x + Math.cos(this.radians) * this.distance;
+    this.y = y + Math.sin(this.radians) * this.distance;
+
+    this.draw(lastPoint);
+  };
+};
+
+function Particle3D(x, y, radius) {
+  this.x = x;
+  this.y = y;
   this.radius = radius;
   this.radians = Math.random() * Math.PI * 2;
   this.velocity = 0.05;
@@ -345,11 +384,7 @@ function Particle(x, y, radius) {
     // +++++++
     //this.y = y + Math.cos(this.radians) * 100;
 
-    //Nice circular motion
-    //this.x = x + Math.cos(this.radians) * this.distance.x;
-    //this.y = y + Math.sin(this.radians) * this.distance.y;
-
-    this.radians += this.velocity;
+    this.radians -= this.velocity;
     this.x = x + Math.cos(this.radians) * this.distance.x;
     this.y = y + Math.sin(this.radians) * this.distance.y;
 
@@ -360,21 +395,35 @@ function Particle(x, y, radius) {
 var particleArr = [];
 
 for (var i=0; i<130; i++) {
-  var x = circularCanvas.width / 2;
+  var x = 200;
   var y = circularCanvas.height / 2;
-  var radius = 5;
-  // var dx = (Math.random() - 0.5) * 7;
-  // var dy = (Math.random() - 0.5) * 7;
+  var radius = Math.random() * 2 + 3;
 
   particleArr.push(new Particle(x, y, radius));
 }
 
+var particle3DArr = [];
+
+for (var i=0; i<75; i++) {
+  var x = 700;
+  var y = circularCanvas.height / 2;
+  var radius = 5;
+
+  particle3DArr.push(new Particle3D(x, y, radius));
+}
+
 function circularMotion() {
   requestAnimationFrame(circularMotion);
-  circCan.clearRect(0, 0, circularCanvas.width, circularCanvas.height);
+  circCan.fillStyle = 'rgba(255, 255, 255, 0.05)';
+  circCan.fillRect(0, 0, 200, circularCanvas.height);
+  circCan.clearRect(200, 0, 700, circularCanvas.height);
 
   for (var i=0; i < particleArr.length; i++) {
     particleArr[i].move();
+  };
+
+  for (var i=0; i < particle3DArr.length; i++) {
+    particle3DArr[i].move();
   };
 };
 
