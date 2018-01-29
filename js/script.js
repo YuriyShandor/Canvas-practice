@@ -314,14 +314,19 @@ circularCanvas.height = 600;
 // var gravityValue = 1;
 // var frictionValue = 0.99;
 
+function randomIntFromRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+};
+
 function Particle(x, y, radius) {
   this.x = x;
   this.y = y;
   // this.dx = dx;
   // this.dy = dy;
   this.radius = radius;
-  this.radians = 0;
+  this.radians = Math.random() * Math.PI * 2;
   this.velocity = 0.05;
+  this.distance = {x: randomIntFromRange(100, 150), y: randomIntFromRange(100, 150)}
 
   this.draw = function() {
     circCan.beginPath();
@@ -332,14 +337,21 @@ function Particle(x, y, radius) {
 
   this.move = function() {
     // Cull move from left to right
+
     // this.radians += this.velocity;
     // this.x = x + Math.cos(this.radians) * 100;
+
     // Diagonal move
+    // +++++++
     //this.y = y + Math.cos(this.radians) * 100;
 
+    //Nice circular motion
+    //this.x = x + Math.cos(this.radians) * this.distance.x;
+    //this.y = y + Math.sin(this.radians) * this.distance.y;
+
     this.radians += this.velocity;
-    this.x = x + Math.cos(this.radians) * 100;
-    this.y = y + Math.sin(this.radians) * 100;
+    this.x = x + Math.cos(this.radians) * this.distance.x;
+    this.y = y + Math.sin(this.radians) * this.distance.y;
 
     this.draw();
   };
@@ -347,9 +359,9 @@ function Particle(x, y, radius) {
 
 var particleArr = [];
 
-for (var i=0; i<1; i++) {
-  var x = Math.random() * circularCanvas.width - radius * 2 + radius;
-  var y = Math.random() * circularCanvas.height - radius * 2 + radius;
+for (var i=0; i<130; i++) {
+  var x = circularCanvas.width / 2;
+  var y = circularCanvas.height / 2;
   var radius = 5;
   // var dx = (Math.random() - 0.5) * 7;
   // var dy = (Math.random() - 0.5) * 7;
