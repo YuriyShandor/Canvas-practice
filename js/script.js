@@ -302,3 +302,68 @@ function gravityBall() {
 };
 
 gravityBall();
+
+//=============== Circular moution with canvas ============
+
+var circularCanvas = document.getElementById('circularCanvas');
+var circCan = circularCanvas.getContext('2d');
+
+circularCanvas.width = 900;
+circularCanvas.height = 600;
+
+// var gravityValue = 1;
+// var frictionValue = 0.99;
+
+function Particle(x, y, radius) {
+  this.x = x;
+  this.y = y;
+  // this.dx = dx;
+  // this.dy = dy;
+  this.radius = radius;
+  this.radians = 0;
+  this.velocity = 0.05;
+
+  this.draw = function() {
+    circCan.beginPath();
+    circCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    circCan.fillStyle = "blue";
+    circCan.fill();
+  };
+
+  this.move = function() {
+    // Cull move from left to right
+    // this.radians += this.velocity;
+    // this.x = x + Math.cos(this.radians) * 100;
+    // Diagonal move
+    //this.y = y + Math.cos(this.radians) * 100;
+
+    this.radians += this.velocity;
+    this.x = x + Math.cos(this.radians) * 100;
+    this.y = y + Math.sin(this.radians) * 100;
+
+    this.draw();
+  };
+};
+
+var particleArr = [];
+
+for (var i=0; i<1; i++) {
+  var x = Math.random() * circularCanvas.width - radius * 2 + radius;
+  var y = Math.random() * circularCanvas.height - radius * 2 + radius;
+  var radius = 5;
+  // var dx = (Math.random() - 0.5) * 7;
+  // var dy = (Math.random() - 0.5) * 7;
+
+  particleArr.push(new Particle(x, y, radius));
+}
+
+function circularMotion() {
+  requestAnimationFrame(circularMotion);
+  circCan.clearRect(0, 0, circularCanvas.width, circularCanvas.height);
+
+  for (var i=0; i < particleArr.length; i++) {
+    particleArr[i].move();
+  };
+};
+
+circularMotion();
