@@ -513,11 +513,59 @@ cdCanvas.height = 600;
 //   cdMouseMove.y = event.y - ((window.innerHeight - cdCanvas.height) / 2) - 5;
 // });
 
+function rotate(velocity, angle) {
+  var rotatedVelocities = {
+    x: velocity.x * Math.cos(angle) - velocity.y * Math.sin(angle),
+    y: velocity.x * Math.sin(angle) + velocity.y * Math.cos(angle)
+  };
+
+  return rotatedVelocities;
+};
+
+function resolveCollision (particle, otherParticle) {
+  var xVelocityDiff = particle.velocity.x - otherParticle.velocity.x;
+  var yVelocityDiff = particle.velocity.y - otherParticle.velocity.y;
+
+  var xDist = otherParticle.x - particle.x;
+  var yDist = otherParticle.y - particle.y;
+
+  if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
+    // Grab angle between two colliding particles
+    var angle = -Math.atan2(otherParticle.y - particle.y, otherParticle.x - particle.x);
+
+    var m1 = particle.mass;
+    var m2 = otherParticle.mass;
+
+    //Velocity before equation
+    var u1 = rotate(particle.velocity, angle);
+    var u2 = rotate(otherParticle.velocity, angle);
+
+    //Velocity after first collision equation
+    var v1 = {x: u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), y: u1.y};
+    var v2 = {x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m2 / (m1 + m2), y: u2.y};
+
+    //Final velocity after rotating axis back to original location
+    var vFinal1 = rotate(v1, -angle);
+    var vFinal2 = rotate(v2, -angle);
+
+    //swap particle velocities for realistic bounce effect
+    particle.velocity.x = vFinal1.x;
+    particle.velocity.y = vFinal1.y;
+    otherParticle.velocity.x = vFinal2.x;
+    otherParticle.velocity.y = vFinal2.y;
+  }
+}
+
 function CDBall(x, y, radius, color) {
   this.x = x;
   this.y = y;
+  this.velocity = {
+    x: Math.random() - 0.5,
+    y: Math.random() - 0.5
+  };
   this.radius = radius;
   this.color = color;
+  this.mass = 1;
 
   this.draw = function() {
     cdCan.beginPath();
@@ -526,24 +574,46 @@ function CDBall(x, y, radius, color) {
     cdCan.stroke();
   };
 
-  this.move = function() {
+  this.move = function(cdBallsArr) {
     this.draw();
+
+    for (var i=0; i<cdBallsArr.length; i++) {
+      if (this === cdBallsArr[i]) continue;
+      if (getDistance(this.x, this.y, cdBallsArr[i].x, cdBallsArr[i].y) - this.radius * 2 < 0) {
+        resolveCollision(this, cdBallsArr[i]);
+      }
+    }
+
+    if (this.x - this.radius <= 0 || this.x + this.radius >= cdCanvas.width) {
+      this.velocity.x = -this.velocity.x;
+    }
+
+    if (this.y - this.radius <= 0 || this.y + this.radius >= cdCanvas.height) {
+      this.velocity.y = -this.velocity.y;
+    }
+
+    if (this.x - this.radius <= 0 || this.x + this.radius >= cdCanvas.height) {
+      this.velocity.y = -this.velocity.y;
+    }
+
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
   };
 };
 
 var cdBallsArr = [];
 
-for (var i=0; i<400; i++) {
+for (var i=0; i<150; i++) {
   var color = 'red';
-  var radius = 10;
-  var x = Math.random() * cdCanvas.width;
-  var y = Math.random() * cdCanvas.height;
+  var radius = 15;
+  var x = randomIntFromRange(radius, cdCanvas.width - radius);
+  var y = randomIntFromRange(radius, cdCanvas.height - radius);
 
   if (i != 0) {
     for (var j=0; j<cdBallsArr.length; j++) {
       if (getDistance(x, y, cdBallsArr[j].x, cdBallsArr[j].y) - radius * 2 < 0) {
-        var x = Math.random() * cdCanvas.width;
-        var y = Math.random() * cdCanvas.height;
+        var x = randomIntFromRange(radius, cdCanvas.width - radius);
+        var y = randomIntFromRange(radius, cdCanvas.height - radius);
 
         j = -1;
       };
@@ -558,7 +628,7 @@ function cdBalls() {
   cdCan.clearRect(0, 0, cdCanvas.width, cdCanvas.height);
 
   for (var i=0; i<cdBallsArr.length; i++) {
-    cdBallsArr[i].move();
+    cdBallsArr[i].move(cdBallsArr);
   }
 };
 
