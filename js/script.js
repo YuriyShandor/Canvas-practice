@@ -428,3 +428,76 @@ function circularMotion() {
 };
 
 circularMotion();
+
+
+//=============== simple collision detection with canvas ============
+
+var scdCanvas = document.getElementById('scdCanvas');
+var scdCan = scdCanvas.getContext('2d');
+
+scdCanvas.width = 900;
+scdCanvas.height = 600;
+
+// for interactivity
+// var circularMouseMove = {
+//   x: undefined,
+//   y: undefined
+// };
+//
+// circularCanvas.addEventListener('mousemove', function(event) {
+//   circularMouseMove.x = event.x - ((window.innerWidth - circularCanvas.width) / 2) + 7;
+//   circularMouseMove.y = event.y - ((window.innerHeight - circularCanvas.height) / 2) - 5;
+// });
+
+function SmallBall(x, y, radius) {
+  this.x = x;
+  this.y = y;
+  this.radius = radius;
+
+  this.draw = function(lastPoint) {
+    scdCan.beginPath();
+    scdCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    scdCan.fillStyle = "red";
+    scdCan.fill();
+  };
+
+  this.move = function() {
+
+    // this.x = x + Math.cos(this.radians) * this.distance;
+    // this.y = y + Math.sin(this.radians) * this.distance;
+    //
+    this.draw();
+  };
+};
+
+function BiggBall(x, y, radius) {
+  this.x = x;
+  this.y = y;
+  this.radius = radius;
+
+  this.draw = function() {
+    scdCan.beginPath();
+    scdCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    scdCan.fillStyle = "green";
+    scdCan.fill();
+  };
+
+  this.move = function() {
+    this.draw();
+  };
+};
+
+var smBall = new SmallBall(200, 200, 25);
+
+var bigBall = new BiggBall(600, 400, 75);
+
+function showBalls() {
+  requestAnimationFrame(circularMotion);
+  circCan.clearRect(0, 0, scdCanvas.widtn, scdCanvas.height);
+
+  smBall.move();
+
+  bigBall.move();
+};
+
+showBalls();
