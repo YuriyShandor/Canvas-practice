@@ -522,8 +522,8 @@ function CDBall(x, y, radius, color) {
   this.draw = function() {
     cdCan.beginPath();
     cdCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    cdCan.fillStyle = this.color;
-    cdCan.fill();
+    cdCan.strokeStyle = this.color;
+    cdCan.stroke();
   };
 
   this.move = function() {
@@ -533,14 +533,25 @@ function CDBall(x, y, radius, color) {
 
 var cdBallsArr = [];
 
-for (var i=0; i<200; i++) {
+for (var i=0; i<400; i++) {
   var color = 'red';
-  var radius = 15;
+  var radius = 10;
   var x = Math.random() * cdCanvas.width;
   var y = Math.random() * cdCanvas.height;
 
+  if (i != 0) {
+    for (var j=0; j<cdBallsArr.length; j++) {
+      if (getDistance(x, y, cdBallsArr[j].x, cdBallsArr[j].y) - radius * 2 < 0) {
+        var x = Math.random() * cdCanvas.width;
+        var y = Math.random() * cdCanvas.height;
+
+        j = -1;
+      };
+    };
+  };
+
   cdBallsArr.push(new CDBall(x, y, radius, color));
-}
+};
 
 function cdBalls() {
   requestAnimationFrame(cdBalls);
