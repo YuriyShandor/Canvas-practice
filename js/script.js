@@ -430,7 +430,7 @@ function circularMotion() {
 circularMotion();
 
 
-//=============== simple collision detection with canvas ============
+//=============== Simple collision detection with canvas ============
 
 var scdCanvas = document.getElementById('scdCanvas');
 var scdCan = scdCanvas.getContext('2d');
@@ -438,12 +438,11 @@ var scdCan = scdCanvas.getContext('2d');
 scdCanvas.width = 900;
 scdCanvas.height = 600;
 
-// for interactivity
 var scdMouseMove = {
   x: 100,
   y: 100
 };
-//
+
 scdCanvas.addEventListener('mousemove', function(event) {
   scdMouseMove.x = event.x - ((window.innerWidth - scdCanvas.width) / 2) + 7;
   scdMouseMove.y = event.y - ((window.innerHeight - scdCanvas.height) / 2) - 5;
@@ -477,8 +476,8 @@ var smBall = new SCDBall(200, 200, 25, 'red');
 
 var lgBall = new SCDBall(450, 300, 75, 'green');
 
-function showBalls() {
-  requestAnimationFrame(showBalls);
+function scdBalls() {
+  requestAnimationFrame(scdBalls);
   scdCan.clearRect(0, 0, scdCanvas.width, scdCanvas.height);
 
   lgBall.move();
@@ -492,9 +491,64 @@ function showBalls() {
   } else {
     lgBall.color = 'green'
   };
-
-  //console.log(distance(lgBall.x, lgBall.y, smBall.x, smBall.y));
-
 };
 
-showBalls();
+scdBalls();
+
+//=============== More interesting collision detection with canvas ============
+
+var cdCanvas = document.getElementById('cdCanvas');
+var cdCan = cdCanvas.getContext('2d');
+
+cdCanvas.width = 900;
+cdCanvas.height = 600;
+
+// var cdMouseMove = {
+//   x: 100,
+//   y: 100
+// };
+//
+// scdCanvas.addEventListener('mousemove', function(event) {
+//   cdMouseMove.x = event.x - ((window.innerWidth - cdCanvas.width) / 2) + 7;
+//   cdMouseMove.y = event.y - ((window.innerHeight - cdCanvas.height) / 2) - 5;
+// });
+
+function CDBall(x, y, radius, color) {
+  this.x = x;
+  this.y = y;
+  this.radius = radius;
+  this.color = color;
+
+  this.draw = function() {
+    cdCan.beginPath();
+    cdCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    cdCan.fillStyle = this.color;
+    cdCan.fill();
+  };
+
+  this.move = function() {
+    this.draw();
+  };
+};
+
+var cdBallsArr = [];
+
+for (var i=0; i<200; i++) {
+  var color = 'red';
+  var radius = 15;
+  var x = Math.random() * cdCanvas.width;
+  var y = Math.random() * cdCanvas.height;
+
+  cdBallsArr.push(new CDBall(x, y, radius, color));
+}
+
+function cdBalls() {
+  requestAnimationFrame(cdBalls);
+  cdCan.clearRect(0, 0, cdCanvas.width, cdCanvas.height);
+
+  for (var i=0; i<cdBallsArr.length; i++) {
+    cdBallsArr[i].move();
+  }
+};
+
+cdBalls();
