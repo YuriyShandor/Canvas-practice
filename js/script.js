@@ -439,46 +439,32 @@ scdCanvas.width = 900;
 scdCanvas.height = 600;
 
 // for interactivity
-// var circularMouseMove = {
-//   x: undefined,
-//   y: undefined
-// };
-//
-// circularCanvas.addEventListener('mousemove', function(event) {
-//   circularMouseMove.x = event.x - ((window.innerWidth - circularCanvas.width) / 2) + 7;
-//   circularMouseMove.y = event.y - ((window.innerHeight - circularCanvas.height) / 2) - 5;
-// });
-
-function SmallBall(x, y, radius) {
-  this.x = x;
-  this.y = y;
-  this.radius = radius;
-
-  this.draw = function(lastPoint) {
-    scdCan.beginPath();
-    scdCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    scdCan.fillStyle = "red";
-    scdCan.fill();
-  };
-
-  this.move = function() {
-
-    // this.x = x + Math.cos(this.radians) * this.distance;
-    // this.y = y + Math.sin(this.radians) * this.distance;
-    //
-    this.draw();
-  };
+var scdMouseMove = {
+  x: 100,
+  y: 100
 };
+//
+scdCanvas.addEventListener('mousemove', function(event) {
+  scdMouseMove.x = event.x - ((window.innerWidth - scdCanvas.width) / 2) + 7;
+  scdMouseMove.y = event.y - ((window.innerHeight - scdCanvas.height) / 2) - 5;
+});
 
-function BiggBall(x, y, radius) {
+function getDistance (x1, y1, x2, y2) {
+  var xDistance = x2 - x1;
+  var yDistance = y2 - y1;
+  return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+}
+
+function SCDBall(x, y, radius, color) {
   this.x = x;
   this.y = y;
   this.radius = radius;
+  this.color = color;
 
   this.draw = function() {
     scdCan.beginPath();
     scdCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    scdCan.fillStyle = "green";
+    scdCan.fillStyle = this.color;
     scdCan.fill();
   };
 
@@ -487,17 +473,28 @@ function BiggBall(x, y, radius) {
   };
 };
 
-var smBall = new SmallBall(200, 200, 25);
+var smBall = new SCDBall(200, 200, 25, 'red');
 
-var bigBall = new BiggBall(600, 400, 75);
+var lgBall = new SCDBall(450, 300, 75, 'green');
 
 function showBalls() {
-  requestAnimationFrame(circularMotion);
-  circCan.clearRect(0, 0, scdCanvas.widtn, scdCanvas.height);
+  requestAnimationFrame(showBalls);
+  scdCan.clearRect(0, 0, scdCanvas.width, scdCanvas.height);
 
+  lgBall.move();
+
+  smBall.x = scdMouseMove.x;
+  smBall.y = scdMouseMove.y;
   smBall.move();
 
-  bigBall.move();
+  if (getDistance(lgBall.x, lgBall.y, smBall.x, smBall.y) < lgBall.radius + smBall.radius) {
+    lgBall.color = 'black';
+  } else {
+    lgBall.color = 'green'
+  };
+
+  //console.log(distance(lgBall.x, lgBall.y, smBall.x, smBall.y));
+
 };
 
 showBalls();
