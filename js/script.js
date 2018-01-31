@@ -152,8 +152,8 @@ interCanvas.width = 900;
 interCanvas.height = 600;
 
 var interMouse = {
-  x: undefined,
-  y: undefined
+  x: interCanvas.width / 2,
+  y: interCanvas.height / 2
 };
 
 var maxRadius = 40;
