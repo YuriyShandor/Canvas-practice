@@ -503,15 +503,15 @@ var cdCan = cdCanvas.getContext('2d');
 cdCanvas.width = 900;
 cdCanvas.height = 600;
 
-// var cdMouseMove = {
-//   x: 100,
-//   y: 100
-// };
-//
-// scdCanvas.addEventListener('mousemove', function(event) {
-//   cdMouseMove.x = event.x - ((window.innerWidth - cdCanvas.width) / 2) + 7;
-//   cdMouseMove.y = event.y - ((window.innerHeight - cdCanvas.height) / 2) - 5;
-// });
+var cdMouseMove = {
+  x: cdCanvas.width / 2,
+  y: cdCanvas.height / 2
+};
+
+cdCanvas.addEventListener('mousemove', function(event) {
+  cdMouseMove.x = event.x - ((window.innerWidth - cdCanvas.width) / 2) + 7;
+  cdMouseMove.y = event.y - ((window.innerHeight - cdCanvas.height) / 2) - 5;
+});
 
 function rotate(velocity, angle) {
   var rotatedVelocities = {
@@ -560,16 +560,22 @@ function CDBall(x, y, radius, color) {
   this.x = x;
   this.y = y;
   this.velocity = {
-    x: Math.random() - 0.5,
-    y: Math.random() - 0.5
+    x: (Math.random() - 0.5) * 5,
+    y: (Math.random() - 0.5) * 5
   };
   this.radius = radius;
   this.color = color;
   this.mass = 1;
+  this.opacity = 0;
 
   this.draw = function() {
     cdCan.beginPath();
     cdCan.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    cdCan.save();
+    cdCan.globalAlpha = this.opacity;
+    cdCan.fillStyle = this.color;
+    cdCan.fill();
+    cdCan.restore();
     cdCan.strokeStyle = this.color;
     cdCan.stroke();
   };
@@ -592,9 +598,13 @@ function CDBall(x, y, radius, color) {
       this.velocity.y = -this.velocity.y;
     }
 
-    if (this.x - this.radius <= 0 || this.x + this.radius >= cdCanvas.height) {
-      this.velocity.y = -this.velocity.y;
-    }
+    //Interactivity
+    if (getDistance(cdMouseMove.x, cdMouseMove.y, this.x, this.y,) < 75) {
+      this.opacity += 0.05;
+    } else {
+      this.opacity -= 0.05;
+      this.opacity = Math.max(0, this.opacity);
+    };
 
     this.x += this.velocity.x;
     this.y += this.velocity.y;
@@ -603,8 +613,10 @@ function CDBall(x, y, radius, color) {
 
 var cdBallsArr = [];
 
-for (var i=0; i<150; i++) {
-  var color = 'red';
+var cdBallsColors = ['#304ffe', '#00695c', '#03a9f4', '#4caf50', '#cddc39'];
+
+for (var i=0; i<250; i++) {
+  var color = cdBallsColors[Math.floor(Math.random() * cdBallsColors.length)];
   var radius = 15;
   var x = randomIntFromRange(radius, cdCanvas.width - radius);
   var y = randomIntFromRange(radius, cdCanvas.height - radius);
